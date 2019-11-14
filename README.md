@@ -18,7 +18,7 @@ FOC,STM32F4,step-by-step,noob
 ### 电角度 
     TODO
 
-# SVPWM是什么？
+# SVPWM
 ## 怎么动最好？
     上面讲了，需要产生个拉动转子的磁场，那么当然是这个磁场和转子磁场正交的时候力矩最大啦,那么旋转起来后，
     这磁场的轨迹就是个圆了（不知道这样讲对不对，有可能大概不确定是错的）。然后我们要控制磁场就要控制电流，
@@ -34,14 +34,24 @@ FOC,STM32F4,step-by-step,noob
 <div align=center><img src="https://github.com/CXianRen/miniFOC/blob/master/img/驱动器.png"/></div>
     用驱动芯片会比较好，自己搭的话要怼6路PWM，还要控制死区，比较麻烦。原理一样的。
     驱动有3个半桥组成，显然，每个半桥在任意时刻只有上半桥开或下半桥开。这样子3个半桥一共有2^3=8个状态。
-    上半桥全开和下半桥全闭合是没有输出的状态。那么就能够实现8个向量（2个0向量）的电压。[推导传送门](https://blog.csdn.net/qlexcel/article/details/74787619#comments)
-    有了8个基础向量我们就能够控制基础向量的长度（工作时间）去合成目标向量了。
+    上半桥全开和下半桥全闭合是没有输出的状态。那么就能够实现8个向量（2个0向量）的电压。
+    
+[推导传送门](https://blog.csdn.net/qlexcel/article/details/74787619#comments)
 
-    对于扇区条件和时间的推导看这里：[扇区条件推导](https://blog.csdn.net/michaelf/article/details/94013805)
+    有了8个基础向量我们就能够控制基础向量的长度（工作时间）去合成目标向量了。
+    对于扇区条件和时间的推导看这里：
+[扇区条件推导](https://blog.csdn.net/michaelf/article/details/94013805)
 
     总结一下上面两个链接的步骤：
     Step1： 计算U1,U2,U3
     Step2:  根据U1,U2,U3 确认所在的扇区
     Step3： 根据所在的扇区计算两个基本向量的工作时间。
     Step4： 然后根据工作时间计算 PWM比较器的值。
+
+    对于图下图的解读：
+<div align=center><img src="https://github.com/CXianRen/miniFOC/blob/master/img/发波图.JPG"/></div>
+    这个倒三角是啥：是PWM的计数器的值，中间蓝色虚线为0，详见下面的 STM32 PWM 中心对齐 模式
+    数字1，2，3处就是算出来，PWM该跳变为高的时间点。X轴为T。
     
+## 验证SVPWM的正确性
+    TODO 示波器拉看那个高电平持续最段的相的高电平时间应该等于高电平持续时间最大的相的两个高电平的间隔时间
